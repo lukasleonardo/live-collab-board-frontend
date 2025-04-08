@@ -24,7 +24,7 @@ export const BoardCard = ({id, name, description, owner, lastUpdate, onDelete}:B
     const formattedDate = new Date(lastUpdate).toLocaleDateString('pt-BR');
     return(
       <Card 
-  onClick={() => navigate(`/dashboard/${id}`)} 
+  onClick={() => navigate(`/dashboard/${id}`,{state:{id, name, description, owner, lastUpdate}})} 
   className="w-full max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
 >
   {/* Cabeçalho com título e botão de deletar */}

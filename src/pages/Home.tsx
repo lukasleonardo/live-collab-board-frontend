@@ -8,7 +8,7 @@ const Home = () => {
             <h1>Home</h1>
             <h1>Olá Mundo</h1>
         <Button onClick={()=>navigate('/login')}>Login</Button>
-        <Button onClick={()=>navigate('/dashboard/1')}>List Dashboards</Button>
+        <Button onClick={()=>navigate('/dashboards')}>List Dashboards</Button>
         <Button onClick={()=>navigate('/task')}>Task Details</Button>
 
         </div>
