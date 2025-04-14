@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { api } from "../api/api";
+import { loginUser } from "@/api/usersService";
 import { useAuthStore } from "../store/useAuthStore";
 import {useNavigate} from 'react-router-dom';
 
@@ -29,11 +29,10 @@ const Login = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await api.post('/auth/login', {email, password});
-            setUser(response.data.user);
-            setToken(response.data.token);
-            console.log(response.data.user)
-            sessionStorage.setItem('token', response.data.token);
+            const data = await loginUser({ email, password });
+            setUser(data.user);
+            setToken(data.token);
+            sessionStorage.setItem('token', data.token);
             navigate('/dashboards');
 
         } catch (error) {

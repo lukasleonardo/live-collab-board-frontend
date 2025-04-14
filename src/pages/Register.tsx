@@ -1,4 +1,4 @@
-import { api } from "@/api/api";
+import { registerUser } from "@/api/usersService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ const Register = () => {
 
         try{
             if(password !== confirmPassword){alert("Senhas não conferem"); return}
-            const response = await api.post('/auth/register', {name,email, password});
+            const response = await registerUser({name, email, password})
             console.log(response);
             navigate('/login');
         }catch(error){

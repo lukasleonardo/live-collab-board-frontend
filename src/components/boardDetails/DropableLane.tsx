@@ -5,7 +5,7 @@ type laneProps = {
     title: string;
     children: React.ReactNode;
 }
-
+/*  desnecessário*/
 export const DroppableLane = ({ id, title, children }:laneProps) => {
   const { setNodeRef, isOver } = useDroppable({ id });
 
