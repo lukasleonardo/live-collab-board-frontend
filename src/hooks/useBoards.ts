@@ -1,6 +1,7 @@
 import { getBoards,createBoard,deleteBoard, getBoardById } from "@/api/boardService";
 import { Board } from "@/lib/types";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 
 export const useBoards = () => {
@@ -17,9 +18,11 @@ export const useBoards = () => {
                 //console.log(data)
                 if(isMounted){
                     setBoards(data);
+                    toast.success("Boards carregados com sucesso!");
             }
             }catch(error){
                 console.log('Erro ao buscar boards',error)
+                toast.error("Erro ao buscar boards!");
             }finally{
                 if(isMounted){
                     setLoading(false);
@@ -39,9 +42,11 @@ export const useBoards = () => {
                 setLoading(true);               
                 const data = await createBoard(boardData)
                 //console.log(data)
-                setBoards((prev) => [...prev, data])                    
+                setBoards((prev) => [...prev, data])
+                toast.success("Board criado com sucesso!");                    
             }catch(error){
                 console.log('Erro ao criar board',error)
+                toast.error("Erro ao criar board!");
             }finally{
                 setLoading(false);
             }
@@ -52,8 +57,10 @@ export const useBoards = () => {
             setLoading(true);
             await deleteBoard(id)
             setBoards((prevBoards) => prevBoards.filter((board:any) => board._id !== id));
+            toast.success("Board deletado com sucesso!");
         }catch(error){
             console.log('Erro ao deletar board',error)
+            toast.error("Erro ao deletar board!");
         }finally{
             setLoading(false);
         }
@@ -65,7 +72,7 @@ export const useBoards = () => {
             const board = await getBoardById(id);
             console.log(board)
             if(isMounted){
-                setBoard(board);        
+                setBoard(board);         
             }
             return () => {
                 isMounted = false
@@ -73,6 +80,7 @@ export const useBoards = () => {
             //console.log(board)
         }catch(error){
             console.log('Erro ao buscar board',error)
+            toast.error("Erro ao buscar board!");
         }
     },[])
 

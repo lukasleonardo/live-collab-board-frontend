@@ -1,9 +1,9 @@
 import { Board, Task } from "@/lib/types";
 import { EllipsisVertical, Pencil, Plus  } from "lucide-react";
-import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import TaskModal from "./TaskModal";
+import TaskModal from "../boardDetails/TaskModal";
 import { useState } from "react";
+import { SearchBar } from "./Searchbar";
 interface DashboardHeaderProps  {
     board:Board
     tasks: Task[],
@@ -21,10 +21,10 @@ export const DashboardHeader = ({ board,tasks, onAddTask}:DashboardHeaderProps )
             </div>
             <div className="mr-6">
             <DropdownMenu>
-                <DropdownMenuTrigger  className="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-md text-gray-500 hover:bg-gray-300 transition">
-                    <Button>
+                <DropdownMenuTrigger  className="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-md text-gray-500 hover:bg-gray-300 transition">
+                    <span>
                         <EllipsisVertical className="h-6 w-6"/>
-                    </Button>
+                    </span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-white shadow-lg rounded-md p-2 z-50">
                 <DropdownMenuItem className="px-3 py-1 text-sm hover:bg-gray-100 cursor-pointer">
@@ -37,6 +37,9 @@ export const DashboardHeader = ({ board,tasks, onAddTask}:DashboardHeaderProps )
                 </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+            </div>
+            <div className="search-bar">
+                <SearchBar placeholder="Pesquisar..." onSearch={() => {}} />
             </div>
         </div>
         {showModal && (

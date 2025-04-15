@@ -1,8 +1,8 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { loginUser } from "@/api/usersService";
 import { useAuthStore } from "../store/useAuthStore";
 import {useNavigate} from 'react-router-dom';
-
+import { toast } from "react-toastify";
 import {
     Card,
     CardContent,
@@ -24,6 +24,15 @@ const Login = () => {
     const setUser = useAuthStore((state) => state.setUser);
     const setToken = useAuthStore((state) => state.setToken);
     const navigate = useNavigate();
+
+    useEffect(() => {
+      const message = localStorage.getItem("toastMessage");
+      if (message) {
+        toast.success(message);
+        localStorage.removeItem("toastMessage");
+      }
+    }, []);
+    
 
     const handleLogin = async (e:React.FormEvent) => {
         e.preventDefault();

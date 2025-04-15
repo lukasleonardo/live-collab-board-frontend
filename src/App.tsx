@@ -8,11 +8,14 @@ import Home from './pages/Home'
 import Register from './pages/Register'
 import ListDashboards  from './pages/ListDashboards'
 import DashboardPage from './pages/DashboardPage'
+import { ToastContainer } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   
   return (
-    <>   
+    <>
+    <ToastContainer position="bottom-right" autoClose={3000} />   
     <Routes>
       <Route path='/' element={<Home/>}/>
       <Route path='/login' element={<Login/>}/>

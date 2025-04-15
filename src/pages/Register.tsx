@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,6 +23,7 @@ const Register = () => {
             if(password !== confirmPassword){alert("Senhas não conferem"); return}
             const response = await registerUser({name, email, password})
             console.log(response);
+            localStorage.setItem("toastMessage", "Usuário cadastrado com sucesso!");
             navigate('/login');
         }catch(error){
             console.log("Erro ao cadastrar usuário" + error);

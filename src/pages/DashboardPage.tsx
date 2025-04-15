@@ -1,6 +1,6 @@
 // pages/dashboard/[id].tsx
 import {DashboardDetails} from "@/components/boardDetails/DashboardDetails";
-import { DashboardHeader } from "@/components/boardDetails/DashboardHeader";
+import { DashboardHeader } from "@/components/boardHeader/DashboardHeader";
 import { useBoards } from "@/hooks/useBoards";
 import { useTasks } from "@/hooks/useTasks";
 import { useEffect } from "react";
