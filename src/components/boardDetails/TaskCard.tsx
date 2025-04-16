@@ -1,3 +1,4 @@
+import { useTaskStore } from '@/hooks/useTaskStore';
 import { Task } from '@/lib/types';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -5,13 +6,12 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 
 interface TaskCardProps {
   task: Task;
-  onDeleteTask: (id: string) => void;
 }
 
-export const TaskCard = ({ task, onDeleteTask }:TaskCardProps)=> {
+export const TaskCard = ({ task}:TaskCardProps)=> {
     const formattedDate = new Date(task.updatedAt).toLocaleDateString('pt-BR');
     const {attributes, listeners,setNodeRef,transform,transition, isDragging} = useSortable({id:task._id});
-
+    const { deleteTaskById } = useTaskStore()
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -40,7 +40,7 @@ export const TaskCard = ({ task, onDeleteTask }:TaskCardProps)=> {
                 Editar
               </DropdownMenuItem>
               <DropdownMenuItem className="px-3 py-1 text-sm text-red-500 hover:bg-gray-100 cursor-pointer" 
-                onClick={()=>onDeleteTask(task._id)}>
+                onClick={()=>deleteTaskById(task._id)}>
                 Excluir
               </DropdownMenuItem>
             </DropdownMenuContent>

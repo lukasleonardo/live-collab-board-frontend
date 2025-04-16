@@ -8,20 +8,23 @@ import { UserMultiSelect } from "../UserMultiSelect"
 import { getUsers } from "@/api/usersService"
 import { User } from "@/lib/types"
 import { Label } from "../ui/label"
+import { boardFormSchema } from "@/schemas/boardSchema"
+import { toast } from "react-toastify"
+import { useBoardStore } from "@/hooks/useBoardStore"
 
 
 type BoardModalProps={
-  onCreateBoard:  (name: string, description: string, members: string[]) => Promise<void> 
   open: boolean
   onClose: () => void
 }
 
-export const BoardModal = ({open,onCreateBoard, onClose}:BoardModalProps) => {
-    //const [showModal, setShowModal] = useState(false);
+export const BoardModal = ({open, onClose}:BoardModalProps) => {
     const [newBoardName, setNewBoardName] = useState('');
     const [newBoardDescription, setNewBoardDescription] = useState('');
     const [users, setUsers] = useState<User[]>([]);
     const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
+
+    const {handleCreateBoard} = useBoardStore();
 
     useEffect(() => {
       if(!open) return
@@ -39,14 +42,28 @@ export const BoardModal = ({open,onCreateBoard, onClose}:BoardModalProps) => {
     
     const handleSubmit = async () => {
       const userIds = selectedMembers.map((member) => member._id);
-      onCreateBoard(newBoardName, newBoardDescription,userIds)
+      const boardData = {
+        title: newBoardName,
+        description: newBoardDescription,
+        members: userIds
+      }
+
+      const result = boardFormSchema.safeParse(boardData);
+      if (!result.success) {
+        console.error("Erro ao validar quadro:", result.error);
+        toast.error("Erro ao validar quadro!");
+        return;
+      }
+
+
+      handleCreateBoard(result.data)
       setNewBoardName('');setNewBoardDescription('')
       onClose();
     }
 
     return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-lg p-6 rounded-lg">
+      <DialogContent className="w-full max-w-lg p-6 rounded-lg" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Criar Novo Quadro</DialogTitle>
         </DialogHeader>

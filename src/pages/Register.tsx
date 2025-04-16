@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { userFormSchema } from "@/schemas/userSchema";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,10 +19,10 @@ const Register = () => {
 
     const handleRegister= async (e:React.FormEvent) =>{
         e.preventDefault();
-
         try{
-            if(password !== confirmPassword){alert("Senhas não conferem"); return}
-            const response = await registerUser({name, email, password})
+            const data = {name, email, password};
+            const result = userFormSchema.safeParse(data);
+            const response = await registerUser(result.data);
             console.log(response);
             localStorage.setItem("toastMessage", "Usuário cadastrado com sucesso!");
             navigate('/login');

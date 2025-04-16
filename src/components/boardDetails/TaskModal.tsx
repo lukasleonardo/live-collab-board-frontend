@@ -8,30 +8,69 @@ import { useEffect, useState } from "react";
 import { UserMultiSelect } from "../UserMultiSelect";
 import { Task, User } from "@/lib/types";
 import { getUsers } from "@/api/usersService";
+import { useTaskStore } from "@/hooks/useTaskStore";
+import { taskFormSchema } from "@/schemas/taskSchema";
+import { toast } from "react-toastify";
 
 type TaskModalProps = {
   lanes:{title:string, id:string}[]
-  tasks:Task[]
+  boardId:string
   open: boolean
   onClose: () => void;
-  onSave: (taskData: any) => void;
 }
 
-const getLastOrderInLane = (laneId: string, tasks: Task[]): number => {
-  const laneTasks = tasks.filter((task) => task.laneId === laneId);
-  if (laneTasks.length === 0) return 0;
-  
-  const maxOrder = Math.max(...laneTasks.map((task) => task.order ?? 0));
-  return maxOrder + 1;
-};
 
   
-const TaskModal = ({ lanes,open,tasks, onClose, onSave }:TaskModalProps) => {
+const TaskModal = ({ lanes,open, onClose, boardId }:TaskModalProps) => {
     const [titleTask, setTitleTask] = useState('');
     const [descriptionTask, setDescriptionTask] = useState('');
     const [selectedStatus, setSelectedStatus] = useState('');
     const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
     const [users, setUsers] = useState<User[]>([]);
+    const { tasks, addTask } = useTaskStore();
+
+
+
+        const getLastOrderInLane = (laneId: string, tasks: Task[]): number => {
+          const laneTasks = tasks.filter((task) => task.laneId === laneId);
+          if (laneTasks.length === 0) return 0;
+          
+          const maxOrder = Math.max(...laneTasks.map((task) => task.order ?? 0));
+          return maxOrder + 1;
+        };
+        
+
+    const handleCreateTask = () => {
+      if (!titleTask || !selectedStatus) return;
+      const order = getLastOrderInLane(selectedStatus, tasks);
+      const taskData = {
+        title: titleTask,
+        description: descriptionTask,
+        laneId: selectedStatus,
+        members: selectedMembers.map((u) => u._id),
+        order, 
+        boardId,
+      }
+
+      const result = taskFormSchema.safeParse(taskData);
+      if (!result.success) {
+        console.error("Erro ao validar tarefa:", result.error);
+        toast.error("Erro ao validar tarefa!");
+        return;
+      }
+
+      addTask(result.data);
+    
+      // limpa e fecha
+      setTitleTask('');
+      setDescriptionTask('');
+      setSelectedStatus('');
+      setSelectedMembers([]);
+      onClose();
+    };
+    
+
+
 
     useEffect(() => {
       if(!open) return
@@ -47,25 +86,6 @@ const TaskModal = ({ lanes,open,tasks, onClose, onSave }:TaskModalProps) => {
           fetchMembers();
         }, [open]);
 
-    const handleAddTask = () => {
-      if (!titleTask || !selectedStatus) return;
-      const order = getLastOrderInLane(selectedStatus, tasks);
-      onSave({
-        title: titleTask,
-        description: descriptionTask,
-        laneId: selectedStatus,
-        members: selectedMembers.map((u) => u._id),
-        order, 
-      });
-    
-      // limpa e fecha
-      setTitleTask('');
-      setDescriptionTask('');
-      setSelectedStatus('');
-      setSelectedMembers([]);
-      onClose();
-    };
-    
 
 
     return (
@@ -109,7 +129,7 @@ const TaskModal = ({ lanes,open,tasks, onClose, onSave }:TaskModalProps) => {
             </Select>
             <UserMultiSelect users={users} selected={selectedMembers} onChange={(users) => setSelectedMembers(users)}/>
             <Button 
-              onClick={()=>handleAddTask()} 
+              onClick={()=>handleCreateTask()} 
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-md"
             >
               Criar

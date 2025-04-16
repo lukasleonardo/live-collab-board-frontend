@@ -2,43 +2,52 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useTaskStore } from "@/hooks/useTaskStore"
 
 interface SearchBarProps {
   placeholder?: string
-  onSearch?: (query: string) => void
   className?: string
+  delay?: number
 }
 
-export function SearchBar({ placeholder = "Pesquisar...", onSearch, className }: SearchBarProps) {
-  const [query, setQuery] = useState("")
+export function SearchBar({ placeholder = "Pesquisar...", className, delay = 300 }: SearchBarProps) {
+  const query = useTaskStore((state) => state.query)
+  const setQuery = useTaskStore((state) => state.setQuery)
+
+  const [inputValue, setInputValue] = useState(query)
   const [isFocused, setIsFocused] = useState(false)
 
-  const handleSearch = () => {
-    if (onSearch && query.trim()) {
-      onSearch(query)
-    }
-  }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setQuery(inputValue)
+      
+    }, delay)
+
+    return () => clearTimeout(timeout)
+  }, [inputValue, delay, setQuery])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSearch()
+      setQuery(inputValue)
     }
   }
 
+  const handleChange=(value:string)=>{
+    setQuery(value)
+    setInputValue(value)
+  }
   const clearSearch = () => {
+    setInputValue("")
     setQuery("")
-    if (onSearch) {
-      onSearch("")
-    }
   }
 
   return (
     <div
       className={cn(
-        "relative flex items-center w-full max-w-md transition-all duration-300",
+        "relative flex items-center w-full max-w-full transition-all duration-300",
         isFocused ? "ring-2 ring-primary/20" : "",
         className,
       )}
@@ -47,20 +56,20 @@ export function SearchBar({ placeholder = "Pesquisar...", onSearch, className }:
         <Search
           className={cn(
             "h-5 w-5 shrink-0 transition-colors duration-200",
-            isFocused || query ? "text-primary" : "text-muted-foreground",
+            isFocused || inputValue ? "text-primary" : "text-muted-foreground",
           )}
         />
         <input
           type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={inputValue}
+          onChange={(e) => handleChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className="flex-1 border-0 bg-transparent px-3 py-1 text-sm outline-none placeholder:text-muted-foreground"
         />
-        {query && (
+        {inputValue && (
           <button onClick={clearSearch} className="group rounded-full p-1 hover:bg-muted">
             <X className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
           </button>
