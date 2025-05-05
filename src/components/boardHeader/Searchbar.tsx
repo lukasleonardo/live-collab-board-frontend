@@ -5,7 +5,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useTaskStore } from "@/hooks/useTaskStore"
+import { useTaskStore } from "@/store/useTaskStore"
 
 interface SearchBarProps {
   placeholder?: string

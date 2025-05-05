@@ -7,8 +7,8 @@ import {
   } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
-import { Board } from "@/lib/types";
-import { useBoardStore } from "@/hooks/useBoardStore";
+import { Board } from "@/lib/types"
+import { useHandleDeleteBoard } from "@/hooks/actions/useBoardActions";
 
 
 type BoardProps = {
@@ -19,7 +19,7 @@ type BoardProps = {
 export const BoardCard = ({board}:BoardProps,)=>{
     const navigate = useNavigate();
     const formattedDate = new Date(board.updatedAt).toLocaleDateString('pt-BR');
-    const {handleDeleteBoard} = useBoardStore();
+    const handleDeleteBoard = useHandleDeleteBoard();
     
   return(
     <Card 

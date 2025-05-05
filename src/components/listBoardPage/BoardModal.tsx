@@ -10,21 +10,26 @@ import { User } from "@/lib/types"
 import { Label } from "../ui/label"
 import { boardFormSchema } from "@/schemas/boardSchema"
 import { toast } from "react-toastify"
-import { useBoardStore } from "@/hooks/useBoardStore"
+import { useBoardStore } from "@/store/useBoardStore"
+import {  useHandleCreateBoard, useHandleGetOneBoard, useHandleUpdateBoard } from "@/hooks/actions/useBoardActions"
+
 
 
 type BoardModalProps={
   open: boolean
+  isEditing: string
   onClose: () => void
 }
 
-export const BoardModal = ({open, onClose}:BoardModalProps) => {
+export const BoardModal = ({isEditing,open, onClose}:BoardModalProps) => {
     const [newBoardName, setNewBoardName] = useState('');
     const [newBoardDescription, setNewBoardDescription] = useState('');
     const [users, setUsers] = useState<User[]>([]);
     const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
-
-    const {handleCreateBoard} = useBoardStore();
+    const handleGetOneBoard = useHandleGetOneBoard();
+    const handleUpdateBoard = useHandleUpdateBoard();
+    const handleCreateBoard = useHandleCreateBoard()
+    const {board} = useBoardStore();
 
     useEffect(() => {
       if(!open) return
@@ -39,27 +44,63 @@ export const BoardModal = ({open, onClose}:BoardModalProps) => {
   
       fetchMembers();
     },[open])
+
+    useEffect(() => {
+      if (!isEditing) return;
+      handleGetOneBoard(isEditing);
+    }, [isEditing, handleGetOneBoard]);
+    
+    useEffect(() => {
+      if (!board || !isEditing || !open) return;
+      setNewBoardName(board.title);
+      setNewBoardDescription(board.description);
+      setSelectedMembers(
+        board.members.filter(
+          (member, index, self) =>
+            index === self.findIndex((m) => m._id === member._id)
+        )
+      );
+      
+    }, [board, isEditing, open]);
+    
     
     const handleSubmit = async () => {
-      const userIds = selectedMembers.map((member) => member._id);
+      console.log("Owner do board:", board?.owner.toString());
+      const userIds = [...new Set(selectedMembers.map((u) => u._id))];
       const boardData = {
         title: newBoardName,
         description: newBoardDescription,
-        members: userIds
-      }
-
+        members: userIds,
+      };
+    
       const result = boardFormSchema.safeParse(boardData);
       if (!result.success) {
         console.error("Erro ao validar quadro:", result.error);
         toast.error("Erro ao validar quadro!");
         return;
       }
-
-
-      handleCreateBoard(result.data)
-      setNewBoardName('');setNewBoardDescription('')
+    
+      try {
+        if (isEditing) {
+          // Aqui você pode ter um método tipo updateBoard
+          await handleUpdateBoard(isEditing, result.data);
+          toast.success("Quadro atualizado com sucesso!");
+        } else {
+          await handleCreateBoard(result.data);
+          toast.success("Quadro criado com sucesso!");
+        }
+      } catch (error) {
+        console.error("Erro ao salvar quadro:", error);
+        toast.error("Erro ao salvar quadro!");
+      }
+    
+      // Resetar form
+      setNewBoardName('');
+      setNewBoardDescription('');
+      setSelectedMembers([]);
       onClose();
-    }
+    };
+    
 
     return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -90,7 +131,7 @@ export const BoardModal = ({open, onClose}:BoardModalProps) => {
             onClick={handleSubmit} 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-md"
           >
-            Criar
+            {isEditing ? 'Atualizar' : 'Criar'}
           </Button>
           <Button 
             onClick={onClose}

@@ -21,3 +21,8 @@ export const getBoardById = async (id: string) => {
     const response = await api.get(`/boards/${id}`)
     return response.data
 }
+
+export const updateBoard = async (id: string, data: any) => {
+    const response = await api.patch(`/boards/${id}`, data)
+    return response.data
+}

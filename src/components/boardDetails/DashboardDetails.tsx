@@ -1,61 +1,70 @@
-// components/Board/DashboardDetails.tsx
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
-import { Board, Task } from "@/lib/types";
-import {Lane} from "./Lane";
-import {  useEffect, useState } from "react";
+import { Board } from "@/lib/types";
+import { Lane } from "./Lane";
+import { useEffect, useState, useMemo } from "react";
 import { closestCorners, DndContext, DragOverlay } from "@dnd-kit/core";
 import { TaskCard } from "./TaskCard";
-import { useTaskStore } from "@/hooks/useTaskStore";
+import { useTaskStore } from "@/store/useTaskStore";
+import { useTaskActions } from "@/hooks/actions/useTaskActions";
+import { useTaskSocketListeners } from "@/hooks/socket/useTaskSocketListener";
+import { useSocket } from "@/hooks/socket/useSocket";
+import { useBoardStore } from "@/store/useBoardStore";
 
 type DashboardDetailsProps = {
   board: Board;
 };
 
-export const DashboardDetails= ( {board}: DashboardDetailsProps) =>{ 
-  const { tasks, loading, reorder, fetchTasks, query } = useTaskStore()
-  const { onDragEnd, sensors } = useDragAndDrop(tasks, reorder);
+export const DashboardDetails = ({ board }: DashboardDetailsProps) => {
+  const socket = useSocket();
+  useTaskSocketListeners(socket);
+  const tasks   = useTaskStore(s => s.tasks);
+  const loading = useTaskStore(s => s.loading);
+  const query   = useTaskStore(s => s.query);
+  const { fetchTasks, handleReorderTasks } = useTaskActions();
+  const currentBoardId = useBoardStore((state) => state.currentBoardId);
+
+  const { onDragEnd, sensors } = useDragAndDrop(tasks, handleReorderTasks);
 
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
-  const activeTask = tasks.find((task) => task._id === activeTaskId);
+
+  const activeTask = useMemo(
+    () => tasks.find((task) => task._id === activeTaskId),
+    [activeTaskId, tasks]
+  );
 
   useEffect(() => {
-    if(!board._id) return
-    fetchTasks(board._id)
-  },[board._id, fetchTasks])
+    if (!currentBoardId) return;
+    fetchTasks(currentBoardId);
+  }, [currentBoardId, fetchTasks]);
 
-  if (loading) return <p>Carregando tarefas...</p>;
-  if (!board) {
-    return <div>Carregando board...</div>;
-  }
+  if (loading) return <p className="text-center">Carregando tarefas...</p>;
+
   return (
-    <DndContext sensors={sensors}
-    collisionDetection={closestCorners}
-    onDragStart={(event) => setActiveTaskId(String(event.active.id))}
-    onDragEnd={(event) => {
-      setActiveTaskId(null);
-      onDragEnd(event);
-    }}
-    onDragCancel={() => setActiveTaskId(null)}>
-    <div className="flex gap-4 overflow-x-auto justify-center" >
-      {board.lanes.map((lane) => {
-        const laneTasks = tasks.filter((task: Task) => task.laneId === lane.id).filter((task) =>
-          task.title.toLowerCase().includes(query.toLowerCase())
-        );;
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={(event) => setActiveTaskId(String(event.active.id))}
+      onDragEnd={(event) => {
+        setActiveTaskId(null);
+        onDragEnd(event);
+      }}
+      onDragCancel={() => setActiveTaskId(null)}
+    >
+      <div className="flex flex-col md:flex-row gap-6 md:overflow-x-auto md:justify-center w-full px-2">
+        {board.lanes.map((lane) => {
+          const laneTasks = tasks.filter(
+            (task) =>
+              task.laneId === lane.id &&
+              task.title.toLowerCase().includes(query.toLowerCase())
+          );
 
-        return (
-          <Lane
-            key={lane.id}
-            lane={lane}
-            tasks={laneTasks}
-          />
-        );
-      })}
-    </div>
-        <DragOverlay>
-        {activeTask ? (
-          <TaskCard task={activeTask} />
-        ) : null}
+          return <Lane key={lane.id} lane={lane} tasks={laneTasks} />;
+        })}
+      </div>
+
+      <DragOverlay>
+        {activeTask ? <TaskCard task={activeTask} /> : null}
       </DragOverlay>
     </DndContext>
   );
-}
+};

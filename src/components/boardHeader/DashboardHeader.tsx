@@ -4,12 +4,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import TaskModal from "../boardDetails/TaskModal";
 import { useState } from "react";
 import { SearchBar } from "./Searchbar";
+import { BoardModal } from "../listBoardPage/BoardModal";
 interface DashboardHeaderProps  {
     board:Board
   }
 export const DashboardHeader = ({ board}:DashboardHeaderProps )=>{
     const [showModal, setShowModal] = useState(false);
-    
+    const[showEditModal, setShowEditModal] = useState(false);
+    const [isEditing, setIsEditing] = useState('');
+    const handleEdit = () =>{ 
+        setShowEditModal(true)
+        setIsEditing(board._id)
+    };
     return(
         <>
         <div className="px-6 py-4">
@@ -27,7 +33,8 @@ export const DashboardHeader = ({ board}:DashboardHeaderProps )=>{
                     </span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-white shadow-lg rounded-md p-2 z-50">
-                    <DropdownMenuItem className="px-3 py-1 text-sm hover:bg-gray-100 cursor-pointer">
+                    <DropdownMenuItem className="px-3 py-1 text-sm hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleEdit()}>
                     <Pencil /> Editar
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -45,13 +52,15 @@ export const DashboardHeader = ({ board}:DashboardHeaderProps )=>{
                 <SearchBar className="w-full mx-auto" placeholder="Pesquisar..." />
             </div>
         </div>
+        {/* Modal */}
+            <BoardModal isEditing={isEditing} open={showEditModal}  onClose={()=>setShowEditModal(false)}/> 
 
         {showModal && (
         <TaskModal
-            lanes={board.lanes}
             open={showModal}
+            isEditing={''}
             onClose={() => setShowModal(false)} 
-            boardId={board._id}        />
+            />
         )}
        
         </>

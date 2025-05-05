@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BoardCard } from "@/components/listBoardPage/BoardCard";
 import { BoardModal } from "@/components/listBoardPage/BoardModal";
-import { useBoardStore } from "@/hooks/useBoardStore";
+import { useBoardStore } from "@/store/useBoardStore";
+import {  useFetchBoards } from "@/hooks/actions/useBoardActions";
 
 const ListDashboards = ()=>{
     const [showModal, setShowModal] = useState(false)
-    const {boards, fetchBoards} = useBoardStore()
-
+    const boards  = useBoardStore(state=>state.boards)
+    const fetchBoards = useFetchBoards()
 
    useEffect(() => {
       fetchBoards()
@@ -29,7 +30,7 @@ const ListDashboards = ()=>{
       </div>
 
       {/* Modal */}
-      <BoardModal open={showModal}  onClose={()=>setShowModal(false)}/>    
+      <BoardModal open={showModal} isEditing=""  onClose={()=>setShowModal(false)}/>    
       {/* Lista de Boards */}
       {boards.length === 0 && <p className="text-gray-600 mt-4">Voce ainda nao possui nenhum quadro criado.</p>}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

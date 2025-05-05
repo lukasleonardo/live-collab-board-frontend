@@ -26,3 +26,13 @@ export interface User{
     name: string,
     email: string
 }
+
+export type TaskInput = {
+    title: string;
+    description?: string;
+    laneId: string;
+    members?: string[]; // IDs apenas
+    order: number;
+    boardId: string;
+  };
+  
