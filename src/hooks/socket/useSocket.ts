@@ -6,7 +6,7 @@ export const useSocket = ():Socket|null => {
     const [socket, setSocket] = useState<Socket|null>(null);
     useEffect(() => {
         const newSocket = io(socketUrl,{
-            transports: ['websocket'],
+            transports: ['websocket','pooling'],
             reconnectionAttempts: 3,
         });
         setSocket(newSocket);

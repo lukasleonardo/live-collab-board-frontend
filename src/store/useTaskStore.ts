@@ -5,7 +5,8 @@ interface TaskStore {
   tasks: Task[];
   task?: Task;
   loading: boolean;
-  query:string
+  query:string,
+  setTask: (task: Task) => void;
   setQuery: (term: string) => void;
   setTasks: (tasks: Task[]) => void;
   addTaskLocally: (task: Task) => void;
@@ -20,7 +21,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   loading: false,
   query: '',
   setQuery: (query) => set({ query }),
-
+  setTask: (task) => set({ task }),
   setTasks: (tasks) => set({ tasks }),
   addTaskLocally: (task) =>
     set((state) => ({ tasks: [...state.tasks, task] })),
@@ -28,12 +29,12 @@ export const useTaskStore = create<TaskStore>((set) => ({
     set((state) => ({
       tasks: state.tasks.filter((t) => t._id !== taskId),
     })),
-  updateTaskLocally: (updatedTask) =>
-    set((state) => ({
-      tasks: state.tasks.map((t) =>
-        t._id === updatedTask._id ? updatedTask : t
-      ),
-      task: updatedTask,
-    })),
+updateTaskLocally: (updatedTask) =>
+  set((state) => ({
+    tasks: state.tasks.map((t) =>
+      t._id === updatedTask._id ? updatedTask : t
+    ),
+  })),
+
   setLoading: (value) => set({ loading: value }),
 }));

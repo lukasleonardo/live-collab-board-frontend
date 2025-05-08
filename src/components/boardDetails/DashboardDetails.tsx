@@ -7,21 +7,21 @@ import { TaskCard } from "./TaskCard";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useTaskActions } from "@/hooks/actions/useTaskActions";
 import { useTaskSocketListeners } from "@/hooks/socket/useTaskSocketListener";
-import { useSocket } from "@/hooks/socket/useSocket";
 import { useBoardStore } from "@/store/useBoardStore";
+import { useSocketContext } from "@/hooks/socket/SocketContext";
 
 type DashboardDetailsProps = {
   board: Board;
 };
 
 export const DashboardDetails = ({ board }: DashboardDetailsProps) => {
-  const socket = useSocket();
+  const socket = useSocketContext();
   useTaskSocketListeners(socket);
   const tasks   = useTaskStore(s => s.tasks);
   const loading = useTaskStore(s => s.loading);
   const query   = useTaskStore(s => s.query);
-  const { fetchTasks, handleReorderTasks } = useTaskActions();
   const currentBoardId = useBoardStore((state) => state.currentBoardId);
+  const { fetchTasks, handleReorderTasks } = useTaskActions(currentBoardId!);
 
   const { onDragEnd, sensors } = useDragAndDrop(tasks, handleReorderTasks);
 

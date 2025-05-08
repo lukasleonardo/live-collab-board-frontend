@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 import { useBoardStore } from "@/store/useBoardStore";
 import { useParams } from "react-router-dom";
 import { useTaskActions } from "@/hooks/actions/useTaskActions";
-import { useHandleGetOneBoard } from "@/hooks/actions/useBoardActions";
 
 type TaskModalProps = {
   open: boolean
@@ -30,11 +29,11 @@ const TaskModal = ({ open, onClose, isEditing }:TaskModalProps) => {
     const [selectedStatus, setSelectedStatus] = useState('');
     const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
     const [users, setUsers] = useState<User[]>([]);
-    const {task,tasks} = useTaskStore();
-    const { handleAddTask, handleUpdateTask, handleGetTaskById} = useTaskActions()
-    const handleGetOneBoard = useHandleGetOneBoard();
+    const tasks = useTaskStore(state => state.tasks);
+    const task = useTaskStore(state => state.task);
     const { board } = useBoardStore();
     const {id:boardId} = useParams<{id:string}>();
+    const { handleAddTask, handleUpdateTask, handleGetTaskById} = useTaskActions(boardId!);
 
     const getLastOrderInLane = (laneId: string, tasks: Task[]): number => {
       const laneTasks = tasks.filter((task) => task.laneId === laneId);
@@ -83,8 +82,7 @@ const TaskModal = ({ open, onClose, isEditing }:TaskModalProps) => {
       toast.error("Erro ao criar tarefa!");
     }
   
-    
-    
+
       // limpa e fecha
       setTitleTask('');
       setDescriptionTask('');
@@ -103,11 +101,8 @@ const TaskModal = ({ open, onClose, isEditing }:TaskModalProps) => {
               console.log('Erro ao buscar membros', error);
             }
           };
-          if(!boardId) return
-          handleGetOneBoard(boardId);
-      
           fetchMembers();
-        }, [boardId, handleGetOneBoard, open]);
+        }, [boardId, open]);
 
     useEffect(() => {
       if (isEditing) {
@@ -121,6 +116,8 @@ const TaskModal = ({ open, onClose, isEditing }:TaskModalProps) => {
         setTitleTask(task.title);
         setDescriptionTask(task.description);
         setSelectedStatus(task.laneId);
+        
+
         setSelectedMembers(task.members);
       }
     },[task, isEditing]);

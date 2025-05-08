@@ -21,15 +21,19 @@ export const useTaskSocketListeners = (socket: Socket|null) => {
       addTaskLocally(task);
     };
 
-    const handleTaskDeleted = (taskId: string) => {
+    const handleTaskDeleted = ({taskId,boardId: incomingBoardId}: {taskId: string,boardId: string}) => {
+      console.log('Received task:deleted', taskId, incomingBoardId);
+      if (incomingBoardId !== currentBoardId) return;
       removeTaskLocally(taskId);
     };
 
-    const handleTaskUpdated = (task: Task) => {
+    const handleTaskUpdated = ({task,boardId: incomingBoardId}: {task: Task,boardId: string}) => {
+      if (incomingBoardId !== currentBoardId) return;
       updateTaskLocally(task);
     };
 
-    const handleTasksReordered = (updatedTasks: Task[]) => {
+    const handleTasksReordered = ({ updatedTasks, boardId:incomingBoardId }: { updatedTasks: Task[], boardId: string }) => {
+      if (incomingBoardId !== currentBoardId) return
       setTasks(updatedTasks);
     };
 

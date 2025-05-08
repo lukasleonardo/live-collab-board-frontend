@@ -5,10 +5,12 @@ import TaskModal from "../boardDetails/TaskModal";
 import { useState } from "react";
 import { SearchBar } from "./Searchbar";
 import { BoardModal } from "../listBoardPage/BoardModal";
+import { Badge } from "../ui/badge";
 interface DashboardHeaderProps  {
     board:Board
+    usersCount:number
   }
-export const DashboardHeader = ({ board}:DashboardHeaderProps )=>{
+export const DashboardHeader = ({ board, usersCount}:DashboardHeaderProps )=>{
     const [showModal, setShowModal] = useState(false);
     const[showEditModal, setShowEditModal] = useState(false);
     const [isEditing, setIsEditing] = useState('');
@@ -46,7 +48,20 @@ export const DashboardHeader = ({ board}:DashboardHeaderProps )=>{
                 </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-
+            <div className="flex items-center gap-2">
+                <div className="text-sm font-medium tabular-nums transition-all duration-500 ease-in-out">
+                {usersCount}
+                </div>
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    Ao vivo
+                </Badge>
+                </div>
+            </div>
+            <div className="mt-4 flex items-center justify-center gap-2">
             {/* Barra de pesquisa abaixo */}
             <div className="mt-4 w-full max-w-[1000px] mx-auto">
                 <SearchBar className="w-full mx-auto" placeholder="Pesquisar..." />

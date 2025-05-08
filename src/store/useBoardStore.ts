@@ -6,6 +6,8 @@ interface BoardStore {
   board?: Board;
   loading: boolean;
   currentBoardId?: string;
+  liveUsers: number;
+  setLiveUsers: (users: number) => void;
   setCurrentBoardId: (boardId: string) => void;
   setBoard: (board: Board) => void;
   setBoards: (board: Board[]) => void;
@@ -16,12 +18,17 @@ interface BoardStore {
 }
 
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useBoardStore = create<BoardStore>((set, get) => ({
   boards: [],
   board: undefined,
   loading: false,
   currentBoardId: undefined,
+  liveUsers: 0,
+  setLiveUsers: (numUsers:number) => {
+    console.log('setLiveUsers', numUsers);
+    if(numUsers === get().liveUsers) return
+    set({ liveUsers: numUsers })
+  },
   
   setCurrentBoardId: (boardId) => set({ currentBoardId: boardId }),
   setBoard: (newBoard) => 
@@ -34,7 +41,6 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
   
     setBoards: (newBoards) =>
       set((state) => {
-
         const sameLength = state.boards?.length === newBoards.length;
         const sameIds = sameLength && state.boards.every((b, i) => b._id === newBoards[i]._id);
         

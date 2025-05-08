@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useState } from 'react';
 import TaskModal from './TaskModal';
 import { useTaskActions } from '@/hooks/actions/useTaskActions';
+import { useBoardStore } from '@/store/useBoardStore';
 
 interface TaskCardProps {
   task: Task;
@@ -16,7 +17,8 @@ export const TaskCard = ({ task}:TaskCardProps)=> {
     const [isEditing, setIsEditing] = useState('');
     const formattedDate = new Date(task.updatedAt).toLocaleDateString('pt-BR');
     const {attributes, listeners,setNodeRef,transform,transition, isDragging} = useSortable({id:task._id});
-    const { handleDeleteTask } = useTaskActions()
+    const currentBoardId = useBoardStore(state => state.currentBoardId);
+    const {handleDeleteTask} = useTaskActions(currentBoardId!);
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -52,7 +54,7 @@ export const TaskCard = ({ task}:TaskCardProps)=> {
                 Editar
               </DropdownMenuItem>
               <DropdownMenuItem className="px-3 py-1 text-sm text-red-500 hover:bg-gray-100 cursor-pointer" 
-                onClick={()=>handleDeleteTask(task._id)}>
+                onClick={()=>handleDeleteTask(task._id,currentBoardId!)}>
                 Excluir
               </DropdownMenuItem>
             </DropdownMenuContent>

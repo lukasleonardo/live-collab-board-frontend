@@ -82,7 +82,6 @@ export const BoardModal = ({isEditing,open, onClose}:BoardModalProps) => {
     
       try {
         if (isEditing) {
-          // Aqui você pode ter um método tipo updateBoard
           await handleUpdateBoard(isEditing, result.data);
           toast.success("Quadro atualizado com sucesso!");
         } else {
