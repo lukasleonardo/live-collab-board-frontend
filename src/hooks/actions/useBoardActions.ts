@@ -1,36 +1,37 @@
+import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from "@/api/boardService";
+import { boardFormData } from "@/schemas/boardSchema";
 import { useBoardStore } from "@/store/useBoardStore";
 import { useCallback } from "react";
-import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from "@/api/boardService";
 import { toast } from "react-toastify";
-import { boardFormData } from "@/schemas/boardSchema";
+import { useBoardEmitter } from "../socket/useBoardEmitter";
+import { useSocketContext } from "../socket/SocketContext";
 
-export const useFetchBoards = () => {
+export const useBoardActions = () => {
+  const socket = useSocketContext();
   const setBoards = useBoardStore(state => state.setBoards);
+  const setBoard = useBoardStore(state => state.setBoard);
   const setLoading = useBoardStore(state => state.setLoading);
+  const { emitUpdateBoard, emitCreateBoard, emitDeleteBoard } = useBoardEmitter(socket);
+  const removeBoardLocally = useBoardStore(state => state.removeBoardLocally);
 
-  return useCallback(async () => {
+  const fetchBoards = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getBoards();
       setBoards(data);
       toast.success("Boards carregados com sucesso!");
     } catch (err: any) {
-      toast.error("Erro ao buscar boards",err);
+      toast.error("Erro ao buscar boards", err);
     } finally {
       setLoading(false);
     }
   }, [setBoards, setLoading]);
-};
 
-export const useHandleCreateBoard = () => {
-  const addBoardLocally = useBoardStore(state => state.addBoardLocally);
-  const setLoading = useBoardStore(state => state.setLoading);
-
-  return useCallback(async (boardData: boardFormData) => {
+  const createBoardHandler = useCallback(async (boardData: boardFormData) => {
     setLoading(true);
     try {
       const newBoard = await createBoard(boardData);
-      addBoardLocally(newBoard);
+      emitCreateBoard(newBoard);
       toast.success("Board criado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar board", error);
@@ -38,18 +39,14 @@ export const useHandleCreateBoard = () => {
     } finally {
       setLoading(false);
     }
-  }, [addBoardLocally, setLoading]);
-};
+  }, [emitCreateBoard, setLoading]);
 
-export const useHandleDeleteBoard = () => {
-  const removeBoardLocally = useBoardStore(state => state.removeBoardLocally);
-  const setLoading = useBoardStore(state => state.setLoading);
-
-  return useCallback(async (id: string) => {
+  const deleteBoardHandler = useCallback(async (boardId: string) => {
     setLoading(true);
     try {
-      await deleteBoard(id);
-      removeBoardLocally(id);
+      await deleteBoard(boardId);
+      removeBoardLocally(boardId);
+      emitDeleteBoard(boardId);
       toast.success("Board deletado com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar board", error);
@@ -57,37 +54,38 @@ export const useHandleDeleteBoard = () => {
     } finally {
       setLoading(false);
     }
-  }, [removeBoardLocally, setLoading]);
-};
+  }, [emitDeleteBoard, setLoading,removeBoardLocally]);
 
-export const useHandleUpdateBoard = () => {
-  const updateBoardLocally = useBoardStore(state => state.updateBoardLocally);
-
-  return useCallback(async (id: string, data: any) => {
+  const updateBoardHandler = useCallback(async (boardId: string, board: boardFormData) => {
     try {
-      const updatedBoard = await updateBoard(id, data);
-      updateBoardLocally(updatedBoard);
+      const updatedBoard = await updateBoard(boardId, board);
+      console.log(updatedBoard, boardId);
+      emitUpdateBoard(updatedBoard, boardId);
       toast.success("Board atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar board", error);
       toast.error("Erro ao atualizar board!");
     }
-  }, [updateBoardLocally]);
-};
+  }, [emitUpdateBoard]);
 
-export const useHandleGetOneBoard = () => {
-  const setBoard = useBoardStore(state => state.setBoard);
-  const setLoading = useBoardStore(state => state.setLoading);
-
-  return useCallback(async (id: string) => {
+  const getOneBoardHandler = useCallback(async (id: string) => {
     setLoading(true);
     try {
       const data = await getBoardById(id);
       setBoard(data);
     } catch (err: any) {
-      toast.error("Erro ao buscar board",err);
+      toast.error("Erro ao buscar board", err);
     } finally {
       setLoading(false);
     }
   }, [setBoard, setLoading]);
+
+  return {
+    fetchBoards,
+    createBoardHandler,
+    deleteBoardHandler,
+    updateBoardHandler,
+    getOneBoardHandler,
+  };
 };
+

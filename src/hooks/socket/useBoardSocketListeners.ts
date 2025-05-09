@@ -11,7 +11,7 @@ export const useBoardSocketListeners = (socket: Socket|null) => {
     setLiveUsers
 
   } = useBoardStore();
-
+  const currentBoardId = useBoardStore(state => state.currentBoardId);
   useEffect(() => {
     if (!socket) return;
 
@@ -24,11 +24,14 @@ export const useBoardSocketListeners = (socket: Socket|null) => {
       addBoardLocally(board);
     };
 
-    const handleBoardDeleted = (boardId: string) => {
+    const handleBoardDeleted = (boardId:string) => {
+      console.log('board deleted', boardId);
       removeBoardLocally(boardId);
     };
 
-    const handleBoardUpdated = (board: Board) => {
+    const handleBoardUpdated = ({board,boardId: incomingBoardId}: {board: Board,boardId: string}) => {
+      if (incomingBoardId !== currentBoardId) return;
+      console.log('board updated', board, incomingBoardId)
       updateBoardLocally(board);
     };
 
@@ -46,6 +49,6 @@ export const useBoardSocketListeners = (socket: Socket|null) => {
     };
 
    
-  }, [addBoardLocally, removeBoardLocally, setLiveUsers, socket, updateBoardLocally]);
+  }, [addBoardLocally, currentBoardId, removeBoardLocally, setLiveUsers, socket, updateBoardLocally]);
 };
 

@@ -11,7 +11,7 @@ import { Label } from "../ui/label"
 import { boardFormSchema } from "@/schemas/boardSchema"
 import { toast } from "react-toastify"
 import { useBoardStore } from "@/store/useBoardStore"
-import {  useHandleCreateBoard, useHandleGetOneBoard, useHandleUpdateBoard } from "@/hooks/actions/useBoardActions"
+import {  useBoardActions } from "@/hooks/actions/useBoardActions"
 
 
 
@@ -26,9 +26,10 @@ export const BoardModal = ({isEditing,open, onClose}:BoardModalProps) => {
     const [newBoardDescription, setNewBoardDescription] = useState('');
     const [users, setUsers] = useState<User[]>([]);
     const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
-    const handleGetOneBoard = useHandleGetOneBoard();
-    const handleUpdateBoard = useHandleUpdateBoard();
-    const handleCreateBoard = useHandleCreateBoard()
+    const {  
+      createBoardHandler,
+      updateBoardHandler,
+    } = useBoardActions();
     const {board} = useBoardStore();
 
     useEffect(() => {
@@ -46,11 +47,6 @@ export const BoardModal = ({isEditing,open, onClose}:BoardModalProps) => {
     },[open])
 
     useEffect(() => {
-      if (!isEditing) return;
-      handleGetOneBoard(isEditing);
-    }, [isEditing, handleGetOneBoard]);
-    
-    useEffect(() => {
       if (!board || !isEditing || !open) return;
       setNewBoardName(board.title);
       setNewBoardDescription(board.description);
@@ -65,7 +61,6 @@ export const BoardModal = ({isEditing,open, onClose}:BoardModalProps) => {
     
     
     const handleSubmit = async () => {
-      console.log("Owner do board:", board?.owner.toString());
       const userIds = [...new Set(selectedMembers.map((u) => u._id))];
       const boardData = {
         title: newBoardName,
@@ -82,10 +77,10 @@ export const BoardModal = ({isEditing,open, onClose}:BoardModalProps) => {
     
       try {
         if (isEditing) {
-          await handleUpdateBoard(isEditing, result.data);
+          await updateBoardHandler(isEditing, result.data);
           toast.success("Quadro atualizado com sucesso!");
         } else {
-          await handleCreateBoard(result.data);
+          await createBoardHandler(result.data);
           toast.success("Quadro criado com sucesso!");
         }
       } catch (error) {

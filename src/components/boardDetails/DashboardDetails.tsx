@@ -50,7 +50,8 @@ export const DashboardDetails = ({ board }: DashboardDetailsProps) => {
       }}
       onDragCancel={() => setActiveTaskId(null)}
     >
-      <div className="flex flex-col md:flex-row gap-6 md:overflow-x-auto md:justify-center w-full px-2">
+      <main className="max-w-7xl mx-auto p-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {board.lanes.map((lane) => {
           const laneTasks = tasks.filter(
             (task) =>
@@ -61,7 +62,7 @@ export const DashboardDetails = ({ board }: DashboardDetailsProps) => {
           return <Lane key={lane.id} lane={lane} tasks={laneTasks} />;
         })}
       </div>
-
+</main>
       <DragOverlay>
         {activeTask ? <TaskCard task={activeTask} /> : null}
       </DragOverlay>

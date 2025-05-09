@@ -3,18 +3,23 @@ import { Button } from "@/components/ui/button";
 import { BoardCard } from "@/components/listBoardPage/BoardCard";
 import { BoardModal } from "@/components/listBoardPage/BoardModal";
 import { useBoardStore } from "@/store/useBoardStore";
-import {  useFetchBoards } from "@/hooks/actions/useBoardActions";
+import {  useBoardActions } from "@/hooks/actions/useBoardActions";
+
+import { useSocketContext } from "@/hooks/socket/SocketContext";
+import { useBoardSocketListeners } from "@/hooks/socket/useBoardSocketListeners";
 
 const ListDashboards = ()=>{
+  const socket = useSocketContext();
     const [showModal, setShowModal] = useState(false)
     const boards  = useBoardStore(state=>state.boards)
-    const fetchBoards = useFetchBoards()
+    const {fetchBoards} = useBoardActions()
+    useBoardSocketListeners(socket)
 
    useEffect(() => {
       fetchBoards()
    },[fetchBoards])
 
-
+   
 
   return( 
     <div className="max-w-8xl mx-auto mt-8 mx-2 bg-white p-8 rounded-lg shadow-lg">
@@ -46,3 +51,4 @@ const ListDashboards = ()=>{
 }
 
 export default ListDashboards
+

@@ -22,7 +22,6 @@ export const useTaskSocketListeners = (socket: Socket|null) => {
     };
 
     const handleTaskDeleted = ({taskId,boardId: incomingBoardId}: {taskId: string,boardId: string}) => {
-      console.log('Received task:deleted', taskId, incomingBoardId);
       if (incomingBoardId !== currentBoardId) return;
       removeTaskLocally(taskId);
     };

@@ -8,7 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { Board } from "@/lib/types"
-import { useHandleDeleteBoard } from "@/hooks/actions/useBoardActions";
+import {  useBoardActions } from "@/hooks/actions/useBoardActions";
 
 
 type BoardProps = {
@@ -19,8 +19,7 @@ type BoardProps = {
 export const BoardCard = ({board}:BoardProps,)=>{
     const navigate = useNavigate();
     const formattedDate = new Date(board.updatedAt).toLocaleDateString('pt-BR');
-    const handleDeleteBoard = useHandleDeleteBoard();
-    
+    const {deleteBoardHandler} = useBoardActions();
   return(
     <Card 
       onClick={() => navigate(`/dashboard/${board._id}`,{state:{board}})} 
@@ -33,8 +32,8 @@ export const BoardCard = ({board}:BoardProps,)=>{
         </CardTitle>
         <button 
           onClick={(e) => {
-            e.stopPropagation(); // Evita que o card seja clicável ao deletar
-            handleDeleteBoard(board._id);
+            e.stopPropagation(); 
+            deleteBoardHandler(board._id);
           }} 
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
         >

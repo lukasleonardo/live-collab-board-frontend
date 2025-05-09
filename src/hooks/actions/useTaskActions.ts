@@ -84,6 +84,7 @@ export const useTaskActions = (boardId: string) => {
   }, [setTasks, emitReorderTasks, boardId]);
 
   const handleUpdateTask = useCallback(async (id: string, data: TaskFormData, boardId: string) => {
+    console.log('handleUpdateTask', id, data, boardId);
     try {
       const updated = await updateTask(id, data);;
       emitUpdateTask(updated, boardId);

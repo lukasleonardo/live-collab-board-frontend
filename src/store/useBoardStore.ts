@@ -24,13 +24,21 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
   loading: false,
   currentBoardId: undefined,
   liveUsers: 0,
+
+  
+  setLoading: (value) => set({ loading: value }),
   setLiveUsers: (numUsers:number) => {
     console.log('setLiveUsers', numUsers);
     if(numUsers === get().liveUsers) return
     set({ liveUsers: numUsers })
   },
   
-  setCurrentBoardId: (boardId) => set({ currentBoardId: boardId }),
+  setCurrentBoardId: (boardId) => {
+    if (get().currentBoardId !== boardId) {
+      set({ currentBoardId: boardId });
+    }
+  },
+
   setBoard: (newBoard) => 
     set((state) => {
       if (state.board?._id !== newBoard._id) {
@@ -57,8 +65,14 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       boards: state.boards.filter((b) => b._id !== boardId),
     })),
   updateBoardLocally: (board) =>
-    set((state) => ({
-      boards: state.boards.map((b) => (b._id === board._id ? board : b)),
-    })),
-  setLoading: (value) => set({ loading: value }),
+  set((state) => {
+    const updatedBoards = state.boards.map((b) => (b._id === board._id ? board : b));
+    const updatedCurrentBoard = state.board && state.board._id === board._id ? board : state.board;
+
+    return {
+      boards: updatedBoards,
+      board: updatedCurrentBoard,
+    };
+  }),
+
 }));
