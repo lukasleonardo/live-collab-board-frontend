@@ -64,15 +64,20 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     set((state) => ({
       boards: state.boards.filter((b) => b._id !== boardId),
     })),
-  updateBoardLocally: (board) =>
-  set((state) => {
-    const updatedBoards = state.boards.map((b) => (b._id === board._id ? board : b));
-    const updatedCurrentBoard = state.board && state.board._id === board._id ? board : state.board;
+  updateBoardLocally: (updatedBoard) =>
+    set((state) => {
+      const updatedBoards = state.boards.map((b) =>
+        b._id === updatedBoard._id ? { ...b, ...updatedBoard } : b
+      );
 
-    return {
-      boards: updatedBoards,
-      board: updatedCurrentBoard,
-    };
-  }),
+      const isCurrentBoard = state.board?._id === updatedBoard._id;
+
+      return {
+        boards: updatedBoards, 
+        board: isCurrentBoard ? { ...state.board, ...updatedBoard } : state.board,
+      };
+    }),
+
+
 
 }));

@@ -1,7 +1,4 @@
-
-
 import { Route, Routes } from 'react-router-dom'
-import './App.css'
 
 import Login from './pages/Login'
 import Home from './pages/Home'
@@ -15,6 +12,7 @@ import { useSocket } from './hooks/socket/useSocket'
 
 function App() {
   const socket = useSocket();
+
   return (
     <SocketContext.Provider value={socket}>
     <ToastContainer position="bottom-right" autoClose={3000} />   

@@ -33,8 +33,8 @@ const Register = () => {
     }
 
     return (
-        <div className="flex w-full h-screen items-center justify-center m-auto bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-            <Card className="w-full max-w-3/5 min-w-sm">
+        <div className="flex w-full h-screen items-center justify-center m-auto bg-gray-50 px-4  sm:px-6 lg:px-8">
+            <Card className="w-full max-w-3/5 min-w-sm py-6">
                 <CardHeader className="space-y-2">
                     <CardTitle className="text-2xl font-bold">Register</CardTitle>
                     <CardDescription>Register to create a new account</CardDescription>
@@ -65,13 +65,13 @@ const Register = () => {
                             </div>  
                         </div>
                         <div className="btns mt-4 flex gap-2 justify-2">
-                        <Button type="reset">Clear</Button>
-                        <Button type="submit">Register</Button>
+                        <Button type="reset" className="hover:bg-amber-300">Clear</Button>
+                        <Button type="submit" className="bg-emerald-600w-full bg-emerald-600 hover:bg-emerald-700 text-white">Register</Button>
                         </div>
                     </form> 
                 </CardContent>
                 <CardFooter>
-                    <span>Já possui uma conta?<a onClick={()=>navigate('/login')}>sign in</a></span>
+                    <span>Já possui uma conta? <a onClick={()=>navigate('/login')}>sign in</a></span>
                 </CardFooter>
             </Card>
         </div>

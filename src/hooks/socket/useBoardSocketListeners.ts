@@ -9,7 +9,6 @@ export const useBoardSocketListeners = (socket: Socket|null) => {
     removeBoardLocally,
     updateBoardLocally,
     setLiveUsers
-
   } = useBoardStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
   useEffect(() => {

@@ -1,8 +1,9 @@
 // components/UserMultiSelect.tsx
+import { User } from "@/lib/types"
 import { useState } from "react"
-import { Input } from "./ui/input"
-import { Badge } from "./ui/badge"
-import { User } from "../lib/types"
+import { Input } from "../ui/input"
+import { Badge } from "../ui/badge"
+
 
 type UserMultiSelectProps = {
   users: User[]
