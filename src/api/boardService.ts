@@ -13,6 +13,12 @@ export const getBoards = async () => {
     return response.data
 }
 
+
+export const countBoards = async () => {
+    const response = await api.get('/boards/count')
+    return response.data
+}
+
 export const deleteBoard = async (id: string) => {
     await api.delete(`/boards/${id}`)
 }
@@ -24,5 +30,11 @@ export const getBoardById = async (id: string) => {
 
 export const updateBoard = async (id: string, data: any) => {
     const response = await api.patch(`/boards/${id}`, data)
+    return response.data
+}
+
+
+export const getBoardsWithTaskCount = async () => {
+    const response = await api.get('/boards/count')
     return response.data
 }

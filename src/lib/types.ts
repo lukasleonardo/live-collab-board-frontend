@@ -15,10 +15,12 @@ export interface Board{
     title: string,
     description: string,
     owner: User,
+    isFavorite: boolean,
     members: User[],
     lanes:{title:string, id:string}[]
     createdAt: string,
     updatedAt: string
+    taskCount: number
 }
 
 export interface User{

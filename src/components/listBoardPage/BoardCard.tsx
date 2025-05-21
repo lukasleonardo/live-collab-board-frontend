@@ -108,9 +108,9 @@ export const BoardCard = ({ board, onToggleFavorite }: BoardCardProps) => {
                 <button
                   onClick={handleToggleFavorite}
                   className="text-amber-400 hover:text-amber-500 focus:outline-none"
-                  aria-label={isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                  aria-label={board.isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
                 >
-                  {isFavorite ? (
+                  {board.isFavorite ? (
                     <Star className="h-4 w-4 fill-amber-400" />
                   ) : (
                     <StarOff className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -167,7 +167,7 @@ export const BoardCard = ({ board, onToggleFavorite }: BoardCardProps) => {
         <CardContent className="p-4 pt-2">
           <div className="flex items-center gap-2 text-xs text-slate-500 mt-2">
             <Badge variant="outline" className="bg-slate-50 text-slate-600 gap-1 flex items-center">
-              <Kanban className="h-3 w-3" /> 01 tarefas
+              <Kanban className="h-3 w-3" /> {board.taskCount} tarefas
             </Badge>
 
             {board.members && board.members.length > 0 && (

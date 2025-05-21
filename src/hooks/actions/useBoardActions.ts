@@ -1,4 +1,4 @@
-import { createBoard, deleteBoard, getBoardById, getBoards, updateBoard } from "@/api/boardService";
+import { createBoard, deleteBoard, getBoardById, getBoardsWithTaskCount, updateBoard } from "@/api/boardService";
 import { boardFormData } from "@/schemas/boardSchema";
 import { useBoardStore } from "@/store/useBoardStore";
 import { useCallback } from "react";
@@ -17,7 +17,7 @@ export const useBoardActions = () => {
   const fetchBoards = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getBoards();
+      const data = await getBoardsWithTaskCount();
       setBoards(data);
       toast.success("Boards carregados com sucesso!");
     } catch (err: any) {
@@ -79,6 +79,10 @@ export const useBoardActions = () => {
       setLoading(false);
     }
   }, [setBoard, setLoading]);
+
+
+
+
 
   return {
     fetchBoards,
