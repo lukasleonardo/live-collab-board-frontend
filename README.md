@@ -54,3 +54,8 @@ Certifique-se de que o backend esteja rodando em paralelo. O frontend está conf
 Crie um .env:
 
 VITE_API_URL=http://localhost:5000
+
+
+🔗 Backend
+
+O código do frontend está disponível aqui: [https://github.com/lukasleonardo/live-collab-board-backend]
