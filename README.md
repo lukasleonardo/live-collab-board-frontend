@@ -42,54 +42,32 @@ npm install
 npm run dev
 
 ```
-  
 
 Certifique-se de que o backend esteja rodando em paralelo. O frontend está configurado para consumir a API via variável de ambiente (VITE_API_URL).
 
 📁 Estrutura principal
 
-    src/hooks/: lógica de WebSocket, boards, tarefas, etc.
+    src/hooks/: lógica de WebSocket, boards, tarefas, etc.
 
-  
+    src/store/: Zustand stores para estado global
 
-    src/store/: Zustand stores para estado global
+    src/components/: componentes reutilizáveis como cards, modais, dropdowns
 
-  
-
-    src/components/: componentes reutilizáveis como cards, modais, dropdowns
-
-  
-
-    src/pages/: rotas como login, dashboard, etc.
-
-  
+    src/pages/: rotas como login, dashboard, etc.
 
 🔐 Funcionalidades principais
 
-  
+    Login e cadastro de usuários
 
-    Login e cadastro de usuários
+    CRUD de quadros e tarefas
 
-  
+    Organização de tarefas em lanes com drag and drop
 
-    CRUD de quadros e tarefas
+    Adição de membros por autocomplete
 
-  
+    Atualizações em tempo real via WebSocket
 
-    Organização de tarefas em lanes com drag and drop
-
-  
-
-    Adição de membros por autocomplete
-
-  
-
-    Atualizações em tempo real via WebSocket
-
-  
-
-    Exibição do número de tarefas por quadro (taskCount)
-
+    Exibição do número de tarefas por quadro (taskCount)
   
 
 🌐 Variáveis de ambiente
