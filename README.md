@@ -1,54 +1,56 @@
-# React + TypeScript + Vite
+🧾 README.md
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Live Board — Frontend
 
-Currently, two official plugins are available:
+Este é o frontend do **Live Board**, um sistema de quadros estilo Kanban com colaboração em tempo real entre múltiplos usuários. Ele permite criar e gerenciar tarefas com drag-and-drop, atribuir membros e acompanhar tudo em tempo real.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tecnologias utilizadas
 
-## Expanding the ESLint configuration
+- **React**
+- **Zustand** (gerenciamento global de estado)
+- **TailwindCSS**
+- **@dnd-kit** (drag and drop entre colunas)
+- **Socket.IO Client**
+- **Axios**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Instalação
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+```bash
+git clone https://github.com/seu-usuario/liveboard-frontend.git
+cd liveboard-frontend
+npm install
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+▶️ Execução local
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+npm run dev
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Certifique-se de que o backend esteja rodando em paralelo. O frontend está configurado para consumir a API via variável de ambiente (VITE_API_URL).
+📁 Estrutura principal
+
+    src/hooks/: lógica de WebSocket, boards, tarefas, etc.
+
+    src/store/: Zustand stores para estado global
+
+    src/components/: componentes reutilizáveis como cards, modais, dropdowns
+
+    src/pages/: rotas como login, dashboard, etc.
+
+🔐 Funcionalidades principais
+
+    Login e cadastro de usuários
+
+    CRUD de quadros e tarefas
+
+    Organização de tarefas em lanes com drag and drop
+
+    Adição de membros por autocomplete
+
+    Atualizações em tempo real via WebSocket
+
+    Exibição do número de tarefas por quadro (taskCount)
+
+🌐 Variáveis de ambiente
+
+Crie um .env:
+
+VITE_API_URL=http://localhost:5000

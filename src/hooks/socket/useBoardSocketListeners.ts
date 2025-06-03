@@ -2,13 +2,14 @@ import { useEffect } from 'react';
 import { Board } from '@/lib/types';
 import { useBoardStore } from '@/store/useBoardStore';
 import { Socket } from 'socket.io-client';
+import { getBoardsWithTaskCount } from '@/api/boardService';
 
 export const useBoardSocketListeners = (socket: Socket|null) => {
   const {
-    addBoardLocally,
     removeBoardLocally,
     updateBoardLocally,
-    setLiveUsers
+    setLiveUsers,
+    setBoards
   } = useBoardStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
   useEffect(() => {
@@ -19,8 +20,9 @@ export const useBoardSocketListeners = (socket: Socket|null) => {
       setLiveUsers(count);
     }; 
 
-    const handleBoardCreated = ({board,}: {board: Board}) => {
-      addBoardLocally(board);
+    const handleBoardCreated =async () => {
+      const data = await getBoardsWithTaskCount();
+      setBoards(data);
     };
 
     const handleBoardDeleted = (boardId:string) => {
@@ -48,6 +50,6 @@ export const useBoardSocketListeners = (socket: Socket|null) => {
     };
 
    
-  }, [addBoardLocally, currentBoardId, removeBoardLocally, setLiveUsers, socket, updateBoardLocally]);
+  }, [currentBoardId, removeBoardLocally, setBoards, setLiveUsers, socket, updateBoardLocally]);
 };
 
